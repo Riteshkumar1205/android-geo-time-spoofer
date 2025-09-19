@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Android Geo-Time Spoofer</title>
+<style>
+body { font-family: Arial, sans-serif; padding: 20px; max-width: 500px; margin:auto; }
+label { display:block; margin-top: 10px; }
+input { width: 100%; padding: 8px; margin-top: 5px; }
+button { padding: 10px 20px; margin-top: 15px; width: 100%; font-size:16px; }
+</style>
+</head>
+<body>
+
+<h2>Manual Location & Time Spoofer (Android)</h2>
+<form method="POST">
+  <label>Latitude: <input type="number" step="0.000001" name="lat" required value="{{ lat }}"></label>
+  <label>Longitude: <input type="number" step="0.000001" name="lon" required value="{{ lon }}"></label>
+  <label>Altitude: <input type="number" step="0.01" name="alt" value="{{ alt }}"></label>
+  <label>Google Form URL: <input type="url" name="form_url" value="{{ form_url }}" placeholder="https://docs.google.com/forms/..."></label>
+  <button type="submit">Apply Location & Open Form</button>
+</form>
+
+<script src="{{ url_for('static', filename='inject.js') }}"></script>
+<script>
+  const lat = parseFloat("{{ lat }}");
+  const lon = parseFloat("{{ lon }}");
+  const alt = parseFloat("{{ alt }}");
+
+  if (!isNaN(lat) && !isNaN(lon)) {
+      window.navigator.geolocation.getCurrentPosition = function(success, error) {
+          success({ coords: { latitude: lat, longitude: lon, altitude: alt } });
+      };
+      const formUrl = "{{ form_url }}";
+      if (formUrl) window.location.href = formUrl;
+  }
+</script>
+
+</body>
+</html>
